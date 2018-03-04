@@ -5,22 +5,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class WordCount {
-    class Word {
-        String word;
-        int count;
+    private static String FILE_LOCATION = "/home/knoldus/memorydump.txt";
 
-        Word(String word, int count) {
-            this.word = word;
-            this.count = count;
-        }
-    }
-
-    public Map<String, String> findWordsCount(String url) {
+    public void findWordsCountInFile() {
         try {
-            BufferedReader bufferedFile = new BufferedReader(new FileReader(url));
+            BufferedReader bufferedFile = new BufferedReader(new FileReader(FILE_LOCATION));
             String fileContent = "";
             String lines;
-
             while ((lines = bufferedFile.readLine()) != null) {
                 fileContent = fileContent.concat(lines + " ");
             }
@@ -31,17 +22,28 @@ public class WordCount {
             for (String key : fileData.keySet()) {
                 result.put(key, fileData.get(key).size() + "");
             }
-            return result;
-
+            result.forEach(
+                    (key, value) -> System.out.format("\nWord: %s  Count: %s ", key, value)
+            );
         } catch (Exception except) {
             System.out.println(except.getMessage());
         }
-        return new HashMap<>();
     }
 
-    public Map<String, List<Word>> findWordCountInSentence(String sentence) {
-        return Arrays.stream(sentence.split(" "))
+    public void wordCountInSentence(String sentence) {
+        Arrays.stream(sentence.split(" "))
                 .map(word -> new Word(word, 1))
-                .collect(Collectors.groupingBy(wordObject -> wordObject.word));
+                .collect(Collectors.groupingBy(wordObject -> wordObject.word)).forEach(
+                (key, value) -> System.out.format("\nWord: %s  Count: %s ", key, value.size()));
+    }
+
+    class Word {
+        String word;
+        int count;
+
+        Word(String word, int count) {
+            this.word = word;
+            this.count = count;
+        }
     }
 }
